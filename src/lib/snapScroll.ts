@@ -31,6 +31,12 @@ function getCurrentIndex(): number {
   return bestIndex;
 }
 
+function setSnapDisabled(disabled: boolean): void {
+  // CSS scroll-snap-mandatory 会把 JS 动画的中间帧强制对齐到 snap 点,
+  // 导致滚动看起来是瞬移. 动画期间临时关掉, 结束再恢复 (触屏 snap 不受影响).
+  document.documentElement.style.scrollSnapType = disabled ? "none" : "";
+}
+
 function animateTo(targetY: number, duration: number): void {
   cancelAnimationFrame(rafId);
   const startY = window.scrollY;
@@ -40,6 +46,7 @@ function animateTo(targetY: number, duration: number): void {
     return;
   }
   isAnimating = true;
+  setSnapDisabled(true);
   const startTime = performance.now();
 
   const step = (now: number): void => {
@@ -50,6 +57,7 @@ function animateTo(targetY: number, duration: number): void {
       return;
     }
     isAnimating = false;
+    setSnapDisabled(false);
     // 如果动画结束时用户还在滚动 (最近的 wheel 事件在阈值内), 立即接力到下一段
     if (
       queuedDirection !== 0 &&
