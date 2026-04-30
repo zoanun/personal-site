@@ -8,7 +8,6 @@ interface SectionItemConfig {
 
 interface SectionConfig {
   num: string;
-  label: string;
   heading: string;
   items: SectionItemConfig[];
   empty?: string;
@@ -17,17 +16,15 @@ interface SectionConfig {
 const sections: SectionConfig[] = [
   {
     num: "01",
-    label: "Currently",
     heading: "我正在做的事",
     items: [
       {
         title: "个人网站",
-        meta: "Next.js · Vercel",
-        desc: "你正在看到的这一页。Push to GitHub, ship to the world。",
+        desc: "你正在看到的这一页。一次推送,即可上线。",
       },
       {
-        title: "LLM Wiki",
-        meta: "Knowledge Base",
+        title: "大模型知识库",
+        meta: "知识整理",
         desc: (
           <>
             系统化整理大模型相关知识,作为长期可检索的资料库。底层尝试用{" "}
@@ -39,7 +36,7 @@ const sections: SectionConfig[] = [
             >
               OpenKB
             </a>
-            {" "}—— 不依赖向量库、自动生成 Wiki、Obsidian 兼容、支持多模态。
+            {" "}—— 不依赖向量库,自动生成知识库,可对接 Obsidian,支持多模态。
           </>
         ),
       },
@@ -47,14 +44,12 @@ const sections: SectionConfig[] = [
   },
   {
     num: "02",
-    label: "Interests",
     heading: "我感兴趣的事",
     items: [],
     empty: "正在整理中 —— 大模型、知识管理、安静的工具。",
   },
   {
     num: "03",
-    label: "Work",
     heading: "我的成果",
     items: [],
     empty: "敬请期待。",
@@ -70,11 +65,11 @@ export default function Home(): ReactElement {
       <main className="mx-auto w-full max-w-3xl px-6 sm:px-8 py-20 sm:py-28">
         {/* Hero */}
         <header className="rise">
-          <div className="font-mono text-xs uppercase tracking-[0.25em] text-muted">
+          <div className="text-xs tracking-[0.1em] text-muted">
             佐纳 · 个人主页
           </div>
-          <h1 className="mt-6 text-5xl sm:text-7xl font-semibold tracking-tight leading-[1.05]">
-            Hi, I&apos;m{" "}
+          <h1 className="mt-6 text-5xl sm:text-7xl font-semibold tracking-tight leading-[1.15]">
+            你好,我是
             <span className="bg-gradient-to-br from-foreground to-foreground/60 bg-clip-text text-transparent">
               佐纳
             </span>
@@ -96,11 +91,8 @@ export default function Home(): ReactElement {
               className="rise"
               style={{ animationDelay: `${0.15 + i * 0.1}s` }}
             >
-              <div className="flex items-baseline gap-4 mb-10">
-                <span className="font-mono text-sm text-muted">{section.num}</span>
-                <span className="font-mono text-xs uppercase tracking-[0.25em] text-muted">
-                  {section.label}
-                </span>
+              <div className="font-mono text-sm text-muted mb-4">
+                / {section.num}
               </div>
               <h2 className="text-3xl sm:text-4xl font-semibold tracking-tight mb-10">
                 {section.heading}
@@ -118,7 +110,7 @@ export default function Home(): ReactElement {
                           {item.title}
                         </span>
                         {item.meta && (
-                          <span className="font-mono text-xs text-muted mt-1">
+                          <span className="text-xs text-muted mt-1">
                             {item.meta}
                           </span>
                         )}
@@ -136,9 +128,8 @@ export default function Home(): ReactElement {
 
         <hr className="my-20 border-border" />
 
-        <footer className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 font-mono text-xs text-muted">
-          <span>© {new Date().getFullYear()} 佐纳</span>
-          <span>built with Next.js · deployed on Vercel</span>
+        <footer className="text-xs text-muted">
+          © {new Date().getFullYear()} 佐纳
         </footer>
       </main>
     </>
