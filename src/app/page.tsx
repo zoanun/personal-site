@@ -71,12 +71,12 @@ export default function Home(): ReactElement {
         {/* Hero */}
         <header className="rise">
           <div className="font-mono text-xs uppercase tracking-[0.25em] text-muted">
-            zoanu · 个人主页
+            佐纳 · 个人主页
           </div>
           <h1 className="mt-6 text-5xl sm:text-7xl font-semibold tracking-tight leading-[1.05]">
             Hi, I&apos;m{" "}
             <span className="bg-gradient-to-br from-foreground to-foreground/60 bg-clip-text text-transparent">
-              zoanu
+              佐纳
             </span>
             <span className="caret" aria-hidden />
           </h1>
@@ -137,7 +137,7 @@ export default function Home(): ReactElement {
         <hr className="my-20 border-border" />
 
         <footer className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 font-mono text-xs text-muted">
-          <span>© {new Date().getFullYear()} zoanu</span>
+          <span>© {new Date().getFullYear()} 佐纳</span>
           <span>built with Next.js · deployed on Vercel</span>
         </footer>
       </main>

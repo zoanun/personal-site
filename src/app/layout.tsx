@@ -13,8 +13,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "zoanu — 个人主页",
-  description: "zoanu 的个人网站：正在做的事、感兴趣的事、与一些成果。",
+  title: "佐纳 — 个人主页",
+  description: "佐纳的个人网站：正在做的事、感兴趣的事、与一些成果。",
 };
 
 interface RootLayoutProps {

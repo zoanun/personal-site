@@ -1,6 +1,6 @@
 # personal-site
 
-[zoanu](https://github.com/zoanun) 的个人主页 —— 用来展示我正在做的事、感兴趣的方向、以及一些成果。
+[佐纳](https://github.com/zoanun) 的个人主页 —— 用来展示我正在做的事、感兴趣的方向、以及一些成果。
 
 ## 技术栈
 
