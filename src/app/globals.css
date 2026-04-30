@@ -109,3 +109,12 @@ body {
 .rise {
   animation: rise 0.8s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
+
+/* 翻页箭头的轻微下推提示 */
+@keyframes nudge {
+  0%, 100% { transform: translateY(0); opacity: 0.6; }
+  50% { transform: translateY(3px); opacity: 1; }
+}
+.nudge {
+  animation: nudge 2.4s ease-in-out infinite;
+}
