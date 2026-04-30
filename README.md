@@ -1,36 +1,48 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# personal-site
 
-## Getting Started
+[zoanu](https://github.com/zoanun) 的个人主页 —— 用来展示我正在做的事、感兴趣的方向、以及一些成果。
 
-First, run the development server:
+## 技术栈
+
+- [Next.js 16](https://nextjs.org) (App Router, Server Components)
+- [React 19](https://react.dev)
+- [Tailwind CSS v4](https://tailwindcss.com)
+- [Geist](https://vercel.com/font) Sans / Mono via `next/font`
+- 部署在 [Vercel](https://vercel.com),`main` 分支自动上线
+
+## 本地开发
 
 ```bash
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+打开 http://localhost:3000。修改 [src/app/page.tsx](src/app/page.tsx) 即可看到热更新。
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## 常用命令
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+| 命令 | 说明 |
+| --- | --- |
+| `npm run dev` | 启动本地开发服务器 |
+| `npm run build` | 生产构建 |
+| `npm run start` | 启动生产构建 |
+| `npm run lint` | ESLint 检查(core-web-vitals + TypeScript) |
 
-## Learn More
+## 项目结构
 
-To learn more about Next.js, take a look at the following resources:
+```
+src/app/
+├── layout.tsx     # 根布局,加载字体与全局样式
+├── page.tsx       # 主页:Hero + 三个板块
+└── globals.css    # Tailwind v4 设计令牌(@theme inline)
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+设计令牌、颜色、字体变量都在 [src/app/globals.css](src/app/globals.css) 的 `@theme inline` 块里,Tailwind v4 不用单独的 JS 配置文件。
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## 部署
 
-## Deploy on Vercel
+推到 `main` → Vercel 自动构建上线。无手动步骤。
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## License
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Personal project. All rights reserved.
