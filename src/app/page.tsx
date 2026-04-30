@@ -8,8 +8,8 @@ export default function Home() {
       fontFamily: "sans-serif"
     }}>
       <div style={{ textAlign: "center" }}>
-        <h1>Hi, I'm zoanu</h1>
-        <p>I build things with code.</p>
+        <h1>Hi, I'm zoanu !!!</h1>
+        <p>I am testing the domain.</p>
       </div>
     </main>
   );
