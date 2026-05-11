@@ -1,3 +1,6 @@
+import "server-only";
+import fs from "node:fs/promises";
+import path from "node:path";
 import matter from "gray-matter";
 import { remark } from "remark";
 import { visit } from "unist-util-visit";
@@ -112,4 +115,16 @@ export function parseHero(markdown: string): HeroContent {
     subtitle: String(data.subtitle ?? ""),
     headline,
   };
+}
+
+const CONTENT_ROOT = path.join(process.cwd(), "content");
+
+export async function loadHero(): Promise<HeroContent> {
+  const md = await fs.readFile(path.join(CONTENT_ROOT, "hero.md"), "utf8");
+  return parseHero(md);
+}
+
+export async function loadSection(slug: SectionSlug): Promise<SectionContent> {
+  const md = await fs.readFile(path.join(CONTENT_ROOT, slug, "card.md"), "utf8");
+  return parseSection(md);
 }
