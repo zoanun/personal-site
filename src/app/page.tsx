@@ -2,6 +2,7 @@ import type { ReactElement, ReactNode } from "react";
 import { ChevronDownLink } from "@/components/ChevronDownLink";
 import { Logo } from "@/components/Logo";
 import { Markdown } from "@/components/Markdown";
+import { SnapScroller } from "@/components/SnapScroller";
 import {
   loadHero,
   loadSection,
@@ -89,6 +90,7 @@ export default async function Home(): Promise<ReactElement> {
 
   return (
     <>
+      <SnapScroller />
       <div className="aurora" aria-hidden />
       <div className="grid-bg" aria-hidden />
 
