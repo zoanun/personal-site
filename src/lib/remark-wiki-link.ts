@@ -1,4 +1,7 @@
 import GithubSlugger from "github-slugger";
+import { visit } from "unist-util-visit";
+import type { Root, Text, Parent, Link, Image, RootContent } from "mdast";
+import type { Plugin } from "unified";
 import type { SectionSlug } from "@/lib/content";
 import type { VaultIndex } from "@/lib/vault";
 
@@ -79,3 +82,65 @@ export function resolveWikiLink(
 
   return { kind: "internal", url, text };
 }
+
+const WIKI_TOKEN_RE = /(!?)\[\[([^\]]+)\]\]/g;
+
+function makeLinkNode(target: ResolvedWikiLink): Link {
+  return {
+    type: "link",
+    url: target.url || "#",
+    title: target.kind === "broken" ? "broken wiki link" : null,
+    data: {
+      hProperties:
+        target.kind === "broken"
+          ? { className: ["wiki-link-broken"] }
+          : { className: ["wiki-link"] },
+    },
+    children: [{ type: "text", value: target.text }],
+  };
+}
+
+function makeImageNode(raw: string, options: WikiLinkOptions): Image {
+  const [file, ...altParts] = raw.split("|");
+  return {
+    type: "image",
+    url: `${options.attachmentBase}/${file.trim()}`,
+    alt: altParts.length > 0 ? altParts.join("|").trim() : file.trim(),
+    title: null,
+  };
+}
+
+export const remarkWikiLink: Plugin<[WikiLinkOptions], Root> = (options) => {
+  return (tree) => {
+    visit(tree, "text", (node: Text, index, parent) => {
+      if (!parent || typeof index !== "number") return;
+      const value = node.value;
+      WIKI_TOKEN_RE.lastIndex = 0;
+      const matches = [...value.matchAll(WIKI_TOKEN_RE)];
+      if (matches.length === 0) return;
+
+      const replacement: RootContent[] = [];
+      let cursor = 0;
+      for (const m of matches) {
+        const start = m.index ?? 0;
+        const end = start + m[0].length;
+        if (start > cursor) {
+          replacement.push({ type: "text", value: value.slice(cursor, start) });
+        }
+        const isImage = m[1] === "!";
+        const inner = m[2];
+        if (isImage) {
+          replacement.push(makeImageNode(inner, options));
+        } else {
+          replacement.push(makeLinkNode(resolveWikiLink(inner, options)));
+        }
+        cursor = end;
+      }
+      if (cursor < value.length) {
+        replacement.push({ type: "text", value: value.slice(cursor) });
+      }
+      (parent as Parent).children.splice(index, 1, ...replacement);
+      return index + replacement.length;
+    });
+  };
+};
