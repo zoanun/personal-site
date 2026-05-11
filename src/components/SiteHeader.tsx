@@ -9,19 +9,17 @@ import {
 import { Logo } from "./Logo";
 import { snapToId } from "@/lib/snapScroll";
 
-interface NavItemConfig {
+export interface NavItemConfig {
   label: string;
   href: string;
   id: string;
 }
 
-const NAV_ITEMS: NavItemConfig[] = [
-  { label: "正在做", href: "#now", id: "now" },
-  { label: "感兴趣", href: "#curious", id: "curious" },
-  { label: "成果", href: "#works", id: "works" },
-];
+interface SiteHeaderProps {
+  items: NavItemConfig[];
+}
 
-export function SiteHeader(): ReactElement {
+export function SiteHeader({ items }: SiteHeaderProps): ReactElement {
   const [scrolled, setScrolled] = useState<boolean>(false);
   const [activeId, setActiveId] = useState<string | null>(null);
 
@@ -35,7 +33,7 @@ export function SiteHeader(): ReactElement {
   }, []);
 
   useEffect(() => {
-    const trackedIds = ["top", ...NAV_ITEMS.map((item) => item.id)];
+    const trackedIds = ["top", ...items.map((item) => item.id)];
     const targets = trackedIds
       .map((id) => document.getElementById(id))
       .filter((el): el is HTMLElement => el !== null);
@@ -56,7 +54,7 @@ export function SiteHeader(): ReactElement {
 
     targets.forEach((target) => observer.observe(target));
     return () => observer.disconnect();
-  }, []);
+  }, [items]);
 
   return (
     <header
@@ -83,7 +81,7 @@ export function SiteHeader(): ReactElement {
         </a>
 
         <nav className="flex items-center gap-5 sm:gap-7">
-          {NAV_ITEMS.map((item) => (
+          {items.map((item) => (
             <a
               key={item.id}
               href={item.href}

@@ -3,7 +3,11 @@
 import { useEffect } from "react";
 import { installSnapScroll } from "@/lib/snapScroll";
 
-export function SnapScroller(): null {
-  useEffect(() => installSnapScroll(), []);
+interface SnapScrollerProps {
+  ids: string[];
+}
+
+export function SnapScroller({ ids }: SnapScrollerProps): null {
+  useEffect(() => installSnapScroll(ids), [ids]);
   return null;
 }

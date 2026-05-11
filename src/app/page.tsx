@@ -8,11 +8,9 @@ import {
   loadHero,
   loadSection,
   type SectionContent,
-  type SectionSlug,
 } from "@/lib/content";
 import { hasIndex } from "@/lib/vault";
-
-const SECTION_ORDER: SectionSlug[] = ["now", "curious", "works"];
+import { loadSections } from "@/lib/sections";
 
 interface PageShellProps {
   id: string;
@@ -90,19 +88,31 @@ function SectionPanel({ section, deepHref }: SectionPanelProps): ReactElement {
 }
 
 export default async function Home(): Promise<ReactElement> {
+  const sectionMetas = await loadSections();
+  const sectionOrder: string[] = sectionMetas.map((s) => s.slug);
   const [hero, sections, indexFlags] = await Promise.all([
     loadHero(),
-    Promise.all(SECTION_ORDER.map((slug) => loadSection(slug))),
-    Promise.all(SECTION_ORDER.map((slug) => hasIndex(slug))),
+    Promise.all(sectionOrder.map((slug: string) => loadSection(slug))),
+    Promise.all(sectionOrder.map((slug: string) => hasIndex(slug))),
   ]);
+  const snapIds: string[] = ["top", ...sectionOrder];
+  const firstHeading = sections[0]?.heading ?? "";
 
   return (
     <>
-      <SnapScroller />
+      <SnapScroller ids={snapIds} />
       <div className="aurora" aria-hidden />
       <div className="grid-bg" aria-hidden />
 
-      <PageShell id="top" next={{ href: "#now", label: `向下:${sections[0].heading}` }}>
+      <PageShell
+        id="top"
+        next={
+          sectionOrder[0]
+            ? { href: `#${sectionOrder[0]}`, label: `向下:${firstHeading}` }
+            : undefined
+        }
+        showFooter={sectionOrder.length === 0}
+      >
         <header className="rise relative">
           <Logo
             strokeWidth={1.2}
@@ -127,19 +137,19 @@ export default async function Home(): Promise<ReactElement> {
         </header>
       </PageShell>
 
-      {sections.map((section, i) => {
+      {sections.map((section: SectionContent, i: number) => {
         const next = sections[i + 1];
-        const nextSlug = SECTION_ORDER[i + 1];
+        const nextSlug = sectionOrder[i + 1];
         return (
           <PageShell
-            key={SECTION_ORDER[i]}
-            id={SECTION_ORDER[i]}
+            key={sectionOrder[i]}
+            id={sectionOrder[i]}
             next={next ? { href: `#${nextSlug}`, label: `向下:${next.heading}` } : undefined}
             showFooter={!next}
           >
             <SectionPanel
                 section={section}
-                deepHref={indexFlags[i] ? `/${SECTION_ORDER[i]}` : undefined}
+                deepHref={indexFlags[i] ? `/${sectionOrder[i]}` : undefined}
               />
           </PageShell>
         );

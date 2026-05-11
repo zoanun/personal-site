@@ -5,32 +5,27 @@ import { NoteShell } from "@/components/NoteShell";
 import { NoteRenderer } from "@/components/NoteRenderer";
 import { Backlinks } from "@/components/Backlinks";
 import { loadVault, loadNoteBody } from "@/lib/vault";
-import { loadSection, type SectionSlug } from "@/lib/content";
+import { loadSection } from "@/lib/content";
+import { getSectionSlugs, isKnownSection } from "@/lib/sections";
 
-const SECTIONS: SectionSlug[] = ["now", "curious", "works"];
-
-export function generateStaticParams(): Array<{ section: string }> {
-  return SECTIONS.map((s) => ({ section: s }));
+export async function generateStaticParams(): Promise<Array<{ section: string }>> {
+  return (await getSectionSlugs()).map((s) => ({ section: s }));
 }
 
 interface PageProps {
   params: Promise<{ section: string }>;
 }
 
-function isSectionSlug(s: string): s is SectionSlug {
-  return (SECTIONS as string[]).includes(s);
-}
-
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { section } = await params;
-  if (!isSectionSlug(section)) return {};
+  if (!(await isKnownSection(section))) return {};
   const card = await loadSection(section);
   return { title: `${card.heading} — 佐纳` };
 }
 
 export default async function SectionIndexPage({ params }: PageProps): Promise<ReactElement> {
   const { section } = await params;
-  if (!isSectionSlug(section)) notFound();
+  if (!(await isKnownSection(section))) notFound();
 
   const note = await loadNoteBody(section, "INDEX");
   if (!note) notFound();

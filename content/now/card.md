@@ -1,4 +1,6 @@
 ---
+order: 1
+nav: 正在做
 num: "01"
 heading: 我正在做的事
 empty: 正在整理中。

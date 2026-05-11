@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { SiteHeader } from "@/components/SiteHeader";
+import { loadSections } from "@/lib/sections";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -22,16 +23,22 @@ interface RootLayoutProps {
   children: React.ReactNode;
 }
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
-}: Readonly<RootLayoutProps>): React.ReactElement {
+}: Readonly<RootLayoutProps>): Promise<React.ReactElement> {
+  const sections = await loadSections();
+  const navItems = sections.map((s) => ({
+    label: s.nav,
+    href: `#${s.slug}`,
+    id: s.slug,
+  }));
   return (
     <html
       lang="zh-CN"
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased snap-y snap-mandatory`}
     >
       <body className="min-h-full flex flex-col bg-background text-foreground">
-        <SiteHeader />
+        <SiteHeader items={navItems} />
         {children}
       </body>
     </html>

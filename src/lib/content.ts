@@ -7,7 +7,7 @@ import { visit } from "unist-util-visit";
 import type { Root, Heading, RootContent, Paragraph, Emphasis } from "mdast";
 import { toMarkdown } from "mdast-util-to-markdown";
 
-export type SectionSlug = "now" | "curious" | "works";
+export type SectionSlug = string;
 
 export interface HeroContent {
   kicker: string;

@@ -57,7 +57,7 @@ export function resolveWikiLink(
   // Explicit cross-section path: [[../works/x]]
   let resolvedKey: string | undefined;
   let fallbackText: string = target;
-  const explicit = target.match(/^\.\.\/(now|curious|works)\/(.+)$/);
+  const explicit = target.match(/^\.\.\/([^/]+)\/(.+)$/);
   if (explicit) {
     const tryKey = `${explicit[1]}/${explicit[2]}`;
     if (options.vault.byKey.has(tryKey)) resolvedKey = tryKey;

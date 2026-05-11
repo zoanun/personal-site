@@ -5,9 +5,8 @@ import { NoteShell } from "@/components/NoteShell";
 import { NoteRenderer } from "@/components/NoteRenderer";
 import { Backlinks } from "@/components/Backlinks";
 import { loadVault, loadNoteBody } from "@/lib/vault";
-import { loadSection, type SectionSlug } from "@/lib/content";
-
-const SECTIONS: SectionSlug[] = ["now", "curious", "works"];
+import { loadSection } from "@/lib/content";
+import { isKnownSection } from "@/lib/sections";
 
 export async function generateStaticParams(): Promise<Array<{ section: string; slug: string }>> {
   const vault = await loadVault();
@@ -21,13 +20,9 @@ interface PageProps {
   params: Promise<{ section: string; slug: string }>;
 }
 
-function isSectionSlug(s: string): s is SectionSlug {
-  return (SECTIONS as string[]).includes(s);
-}
-
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { section, slug } = await params;
-  if (!isSectionSlug(section)) return {};
+  if (!(await isKnownSection(section))) return {};
   const note = await loadNoteBody(section, slug);
   if (!note) return {};
   return { title: `${note.ref.title} — 佐纳` };
@@ -35,7 +30,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
 export default async function NotePage({ params }: PageProps): Promise<ReactElement> {
   const { section, slug } = await params;
-  if (!isSectionSlug(section) || slug === "INDEX" || slug === "card") notFound();
+  if (!(await isKnownSection(section)) || slug === "INDEX" || slug === "card") notFound();
 
   const note = await loadNoteBody(section, slug);
   if (!note) notFound();

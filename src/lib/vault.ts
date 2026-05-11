@@ -4,6 +4,7 @@ import path from "node:path";
 import matter from "gray-matter";
 import { cache } from "react";
 import type { SectionSlug } from "@/lib/content";
+import { getSectionSlugs } from "@/lib/sections";
 
 export interface NoteRef {
   section: SectionSlug;
@@ -20,7 +21,6 @@ export interface VaultIndex {
   backlinks: Map<string, NoteRef[]>;
 }
 
-const SECTIONS: SectionSlug[] = ["now", "curious", "works"];
 const CONTENT_ROOT = path.join(process.cwd(), "content");
 
 const WIKI_LINK_RE = /(!?)\[\[([^\]|#]+)(?:#[^\]|]*)?(?:\|[^\]]*)?\]\]/g;
@@ -100,7 +100,8 @@ async function readNote(section: SectionSlug, file: string): Promise<{ ref: Note
 export const loadVault = cache(async (): Promise<VaultIndex> => {
   const notes: NoteRef[] = [];
   const bodies = new Map<string, string>();
-  for (const section of SECTIONS) {
+  const sections = await getSectionSlugs();
+  for (const section of sections) {
     const dir = path.join(CONTENT_ROOT, section);
     let entries: string[];
     try {
