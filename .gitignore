@@ -43,5 +43,6 @@ next-env.d.ts
 # local agent / tooling state
 .claude/
 .omc/
+.worktrees/
 CLAUDE.md
 AGENTS.md
