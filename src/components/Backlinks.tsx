@@ -17,7 +17,7 @@ export function Backlinks({ links }: BacklinksProps): ReactElement | null {
         {links.map((n) => (
           <li key={`${n.section}/${n.slug}`}>
             <Link
-              href={`/${n.section}/${n.slug}`}
+              href={n.isIndex ? `/${n.section}` : `/${n.section}/${n.slug}`}
               className="underline decoration-foreground/30 underline-offset-4 hover:decoration-foreground transition"
             >
               {n.title}
