@@ -23,7 +23,7 @@ export interface VaultIndex {
 const SECTIONS: SectionSlug[] = ["now", "curious", "works"];
 const CONTENT_ROOT = path.join(process.cwd(), "content");
 
-const WIKI_LINK_RE = /\[\[([^\]|#]+)(?:#[^\]|]*)?(?:\|[^\]]*)?\]\]/g;
+const WIKI_LINK_RE = /(!?)\[\[([^\]|#]+)(?:#[^\]|]*)?(?:\|[^\]]*)?\]\]/g;
 
 function isExcluded(slug: string): boolean {
   return slug === "card" || slug === "INDEX";
@@ -42,6 +42,7 @@ export function buildVault(
     if (!isExcluded(note.slug)) {
       byKey.set(key, note);
       byAlias.set(note.slug.toLowerCase(), key);
+      byAlias.set(`${note.section}/${note.slug.toLowerCase()}`, key);
       for (const alias of note.aliases) {
         byAlias.set(alias.toLowerCase(), key);
       }
@@ -49,13 +50,15 @@ export function buildVault(
   }
 
   for (const note of notes) {
+    if (note.slug === "card") continue;
     const sourceKey = `${note.section}/${note.slug}`;
     const body = bodies.get(sourceKey);
     if (!body) continue;
     for (const m of body.matchAll(WIKI_LINK_RE)) {
-      const targetRaw = m[1].trim().toLowerCase();
+      if (m[1] === "!") continue;
+      const targetRaw = m[2].trim().toLowerCase();
       const targetKey =
-        byAlias.get(`${note.section}/${targetRaw}`.toLowerCase()) ??
+        byAlias.get(`${note.section}/${targetRaw}`) ??
         byAlias.get(targetRaw);
       if (!targetKey) continue;
       if (!backlinks.has(targetKey)) backlinks.set(targetKey, []);

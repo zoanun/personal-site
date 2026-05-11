@@ -62,4 +62,34 @@ describe("buildVault", () => {
     expect(v.byKey.has("now/INDEX")).toBe(false);
     expect(v.byKey.has("now/real")).toBe(true);
   });
+
+  it("prefers current-section target when same slug exists in multiple sections", () => {
+    const nowAlpha = note("now", "alpha");
+    const worksAlpha = note("works", "alpha");
+    const v = buildVault([nowAlpha, worksAlpha], new Map());
+    expect(v.byAlias.get("now/alpha")).toBe("now/alpha");
+    expect(v.byAlias.get("works/alpha")).toBe("works/alpha");
+  });
+
+  it("does not produce backlinks from card.md sources", () => {
+    const card = note("now", "card");
+    const real = note("now", "real");
+    const bodies = new Map([
+      ["now/card", "card mentions [[real]]"],
+      ["now/real", ""],
+    ]);
+    const v = buildVault([card, real], bodies);
+    expect(v.backlinks.get("now/real")).toBeUndefined();
+  });
+
+  it("does not produce backlinks from image embeds ![[image]]", () => {
+    const a = note("now", "a");
+    const image = note("now", "image");
+    const bodies = new Map([
+      ["now/a", "embed ![[image]] only"],
+      ["now/image", ""],
+    ]);
+    const v = buildVault([a, image], bodies);
+    expect(v.backlinks.get("now/image")).toBeUndefined();
+  });
 });
