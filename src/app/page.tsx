@@ -1,5 +1,6 @@
 import type { ReactElement, ReactNode } from "react";
 import { ChevronDownLink } from "@/components/ChevronDownLink";
+import { DeepLink } from "@/components/DeepLink";
 import { Logo } from "@/components/Logo";
 import { Markdown } from "@/components/Markdown";
 import { SnapScroller } from "@/components/SnapScroller";
@@ -9,6 +10,7 @@ import {
   type SectionContent,
   type SectionSlug,
 } from "@/lib/content";
+import { hasIndex } from "@/lib/vault";
 
 const SECTION_ORDER: SectionSlug[] = ["now", "curious", "works"];
 
@@ -45,9 +47,10 @@ function PageShell({ id, next, children, showFooter }: PageShellProps): ReactEle
 
 interface SectionPanelProps {
   section: SectionContent;
+  deepHref?: string;
 }
 
-function SectionPanel({ section }: SectionPanelProps): ReactElement {
+function SectionPanel({ section, deepHref }: SectionPanelProps): ReactElement {
   return (
     <div className="rise" style={{ animationDelay: "0.1s" }}>
       <div className="flex items-center gap-3 mb-5">
@@ -80,13 +83,18 @@ function SectionPanel({ section }: SectionPanelProps): ReactElement {
       ) : (
         <p className="text-muted italic">{section.empty}</p>
       )}
+
+      {deepHref && <DeepLink href={deepHref} />}
     </div>
   );
 }
 
 export default async function Home(): Promise<ReactElement> {
-  const hero = await loadHero();
-  const sections = await Promise.all(SECTION_ORDER.map((slug) => loadSection(slug)));
+  const [hero, sections, indexFlags] = await Promise.all([
+    loadHero(),
+    Promise.all(SECTION_ORDER.map((slug) => loadSection(slug))),
+    Promise.all(SECTION_ORDER.map((slug) => hasIndex(slug))),
+  ]);
 
   return (
     <>
@@ -129,7 +137,10 @@ export default async function Home(): Promise<ReactElement> {
             next={next ? { href: `#${nextSlug}`, label: `向下:${next.heading}` } : undefined}
             showFooter={!next}
           >
-            <SectionPanel section={section} />
+            <SectionPanel
+                section={section}
+                deepHref={indexFlags[i] ? `/${SECTION_ORDER[i]}` : undefined}
+              />
           </PageShell>
         );
       })}

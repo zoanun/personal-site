@@ -122,3 +122,12 @@ export async function loadNoteBody(section: SectionSlug, slug: string): Promise<
     return null;
   }
 }
+
+export async function hasIndex(section: SectionSlug): Promise<boolean> {
+  try {
+    await fs.access(path.join(CONTENT_ROOT, section, "INDEX.md"));
+    return true;
+  } catch {
+    return false;
+  }
+}
