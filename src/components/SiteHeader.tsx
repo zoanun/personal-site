@@ -6,6 +6,7 @@ import {
   type MouseEvent,
   type ReactElement,
 } from "react";
+import { usePathname } from "next/navigation";
 import { Logo } from "./Logo";
 import { snapToId } from "@/lib/snapScroll";
 
@@ -20,6 +21,8 @@ interface SiteHeaderProps {
 }
 
 export function SiteHeader({ items }: SiteHeaderProps): ReactElement {
+  const pathname = usePathname();
+  const isHome = pathname === "/";
   const [scrolled, setScrolled] = useState<boolean>(false);
   const [activeId, setActiveId] = useState<string | null>(null);
 
@@ -33,6 +36,7 @@ export function SiteHeader({ items }: SiteHeaderProps): ReactElement {
   }, []);
 
   useEffect(() => {
+    if (!isHome) return;
     const trackedIds = ["top", ...items.map((item) => item.id)];
     const targets = trackedIds
       .map((id) => document.getElementById(id))
@@ -54,7 +58,13 @@ export function SiteHeader({ items }: SiteHeaderProps): ReactElement {
 
     targets.forEach((target) => observer.observe(target));
     return () => observer.disconnect();
-  }, [items]);
+  }, [items, isHome]);
+
+  const currentSectionId = !isHome
+    ? items.find(
+        (it) => pathname === `/${it.id}` || pathname.startsWith(`/${it.id}/`),
+      )?.id ?? null
+    : activeId;
 
   return (
     <header
@@ -66,12 +76,16 @@ export function SiteHeader({ items }: SiteHeaderProps): ReactElement {
     >
       <div className="mx-auto w-full max-w-5xl px-6 sm:px-8 lg:px-12 h-14 flex items-center justify-between">
         <a
-          href="#top"
+          href={isHome ? "#top" : "/"}
           aria-label="返回顶部"
-          onClick={(e: MouseEvent<HTMLAnchorElement>) => {
-            e.preventDefault();
-            snapToId("top");
-          }}
+          onClick={
+            isHome
+              ? (e: MouseEvent<HTMLAnchorElement>) => {
+                  e.preventDefault();
+                  snapToId("top");
+                }
+              : undefined
+          }
           className="group flex items-center gap-2.5"
         >
           <Logo className="h-5 w-5 text-foreground transition-transform duration-500 group-hover:rotate-[20deg]" />
@@ -84,13 +98,17 @@ export function SiteHeader({ items }: SiteHeaderProps): ReactElement {
           {items.map((item) => (
             <a
               key={item.id}
-              href={item.href}
-              onClick={(e: MouseEvent<HTMLAnchorElement>) => {
-                e.preventDefault();
-                snapToId(item.id);
-              }}
+              href={isHome ? item.href : `/${item.href}`}
+              onClick={
+                isHome
+                  ? (e: MouseEvent<HTMLAnchorElement>) => {
+                      e.preventDefault();
+                      snapToId(item.id);
+                    }
+                  : undefined
+              }
               className={
-                activeId === item.id
+                currentSectionId === item.id
                   ? "font-mono text-xs sm:text-sm tracking-tight text-foreground transition-colors"
                   : "font-mono text-xs sm:text-sm tracking-tight text-muted hover:text-foreground transition-colors"
               }
