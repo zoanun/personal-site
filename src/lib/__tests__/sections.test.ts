@@ -24,8 +24,8 @@ describe("loadSections", () => {
     expect(slugs).not.toContain("hero");
   });
 
-  it("matches the current three-section layout", async () => {
+  it("matches the current section layout", async () => {
     const slugs = await getSectionSlugs();
-    expect(slugs).toEqual(["now", "curious", "works"]);
+    expect(slugs).toEqual(["now", "curious", "works", "about"]);
   });
 });

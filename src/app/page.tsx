@@ -45,14 +45,16 @@ function PageShell({ id, next, children, showFooter }: PageShellProps): ReactEle
 
 interface SectionPanelProps {
   section: SectionContent;
+  order: number;
   deepHref?: string;
 }
 
-function SectionPanel({ section, deepHref }: SectionPanelProps): ReactElement {
+function SectionPanel({ section, order, deepHref }: SectionPanelProps): ReactElement {
+  const num = String(order).padStart(2, "0");
   return (
     <div className="rise" style={{ animationDelay: "0.1s" }}>
       <div className="flex items-center gap-3 mb-5">
-        <span className="font-mono text-sm text-muted">{section.num}</span>
+        <span className="font-mono text-sm text-muted">{num}</span>
         <span className="h-px w-12 bg-border" aria-hidden />
       </div>
       <h2 className="text-3xl sm:text-4xl font-semibold tracking-tight mb-10">
@@ -149,6 +151,7 @@ export default async function Home(): Promise<ReactElement> {
           >
             <SectionPanel
                 section={section}
+                order={sectionMetas[i].order}
                 deepHref={indexFlags[i] ? `/${sectionOrder[i]}` : undefined}
               />
           </PageShell>

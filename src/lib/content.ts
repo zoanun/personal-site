@@ -22,7 +22,6 @@ export interface SectionItem {
 }
 
 export interface SectionContent {
-  num: string;
   heading: string;
   empty: string;
   items: SectionItem[];
@@ -94,7 +93,6 @@ export function parseSection(markdown: string): SectionContent {
   flush();
 
   return {
-    num: String(data.num ?? ""),
     heading: String(data.heading ?? ""),
     empty: String(data.empty ?? ""),
     items,

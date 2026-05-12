@@ -27,11 +27,11 @@ describe("parseHero", () => {
 });
 
 describe("parseSection", () => {
-  const fm = ['---', 'num: "01"', 'heading: H', 'empty: E', "---"].join("\n");
+  const fm = ['---', 'heading: H', 'empty: E', "---"].join("\n");
 
   it("returns empty items when no H2 present", () => {
     const result = parseSection(fm + "\n\n");
-    expect(result).toEqual({ num: "01", heading: "H", empty: "E", items: [] });
+    expect(result).toEqual({ heading: "H", empty: "E", items: [] });
   });
 
   it("captures items by H2 sections", () => {
