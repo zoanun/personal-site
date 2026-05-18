@@ -47,3 +47,6 @@ next-env.d.ts
 .worktrees/
 CLAUDE.md
 AGENTS.md
+
+# obsidian
+content/.obsidian/*
