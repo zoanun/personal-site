@@ -1,3 +1,7 @@
+---
+title: LLM Wiki
+aliases: ["LLM Wiki"]
+---
 
 ## LLM Wiki 是什么
 

@@ -8,8 +8,9 @@ import {
   loadHero,
   loadSection,
   type SectionContent,
+  type SectionSlug,
 } from "@/lib/content";
-import { hasIndex } from "@/lib/vault";
+import { hasIndex, loadVault, type VaultIndex } from "@/lib/vault";
 import { loadSections } from "@/lib/sections";
 
 interface PageShellProps {
@@ -47,9 +48,11 @@ interface SectionPanelProps {
   section: SectionContent;
   order: number;
   deepHref?: string;
+  vault: VaultIndex;
+  currentSection: SectionSlug;
 }
 
-function SectionPanel({ section, order, deepHref }: SectionPanelProps): ReactElement {
+function SectionPanel({ section, order, deepHref, vault, currentSection }: SectionPanelProps): ReactElement {
   const num = String(order).padStart(2, "0");
   return (
     <div className="rise" style={{ animationDelay: "0.1s" }}>
@@ -75,7 +78,7 @@ function SectionPanel({ section, order, deepHref }: SectionPanelProps): ReactEle
                 )}
               </div>
               <div className="text-muted leading-relaxed">
-                <Markdown>{item.desc}</Markdown>
+                <Markdown vault={vault} currentSection={currentSection}>{item.desc}</Markdown>
               </div>
             </li>
           ))}
@@ -92,10 +95,11 @@ function SectionPanel({ section, order, deepHref }: SectionPanelProps): ReactEle
 export default async function Home(): Promise<ReactElement> {
   const sectionMetas = await loadSections();
   const sectionOrder: string[] = sectionMetas.map((s) => s.slug);
-  const [hero, sections, indexFlags] = await Promise.all([
+  const [hero, sections, indexFlags, vault] = await Promise.all([
     loadHero(),
     Promise.all(sectionOrder.map((slug: string) => loadSection(slug))),
     Promise.all(sectionOrder.map((slug: string) => hasIndex(slug))),
+    loadVault(),
   ]);
   const snapIds: string[] = ["top", ...sectionOrder];
   const firstHeading = sections[0]?.heading ?? "";
@@ -153,6 +157,8 @@ export default async function Home(): Promise<ReactElement> {
                 section={section}
                 order={sectionMetas[i].order}
                 deepHref={indexFlags[i] ? `/${sectionOrder[i]}` : undefined}
+                vault={vault}
+                currentSection={sectionOrder[i]}
               />
           </PageShell>
         );

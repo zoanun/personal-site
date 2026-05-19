@@ -1,8 +1,14 @@
 import ReactMarkdown from "react-markdown";
+import type { PluggableList } from "unified";
 import type { ComponentProps, ReactElement } from "react";
+import { remarkWikiLink } from "@/lib/remark-wiki-link";
+import type { VaultIndex } from "@/lib/vault";
+import type { SectionSlug } from "@/lib/content";
 
 interface MarkdownProps {
   children: string;
+  vault?: VaultIndex;
+  currentSection?: SectionSlug;
 }
 
 const linkClass =
@@ -20,8 +26,14 @@ function MarkdownLink(props: ComponentProps<"a">): ReactElement {
   );
 }
 
-export function Markdown({ children }: MarkdownProps): ReactElement {
+export function Markdown({ children, vault, currentSection }: MarkdownProps): ReactElement {
+  const remarkPlugins: PluggableList =
+    vault && currentSection
+      ? [[remarkWikiLink, { currentSection, vault, attachmentBase: "/_attachments" }]]
+      : [];
   return (
-    <ReactMarkdown components={{ a: MarkdownLink }}>{children}</ReactMarkdown>
+    <ReactMarkdown remarkPlugins={remarkPlugins} components={{ a: MarkdownLink }}>
+      {children}
+    </ReactMarkdown>
   );
 }

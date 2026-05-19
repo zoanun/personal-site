@@ -26,6 +26,6 @@ describe("loadSections", () => {
 
   it("matches the current section layout", async () => {
     const slugs = await getSectionSlugs();
-    expect(slugs).toEqual(["now", "curious", "works", "about"]);
+    expect(slugs).toEqual(["now", "curious", "works"]);
   });
 });
